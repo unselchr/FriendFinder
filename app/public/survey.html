@@ -144,24 +144,49 @@
             </div>
         </div>
     </div>
+    
+<!-- Modal -->
+<div class="modal fade" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="responseModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalName">NAME</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img id="modalPic" src="#" alt="image of new friend">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 <script>
     $("#submit").on("click",function(event){
-        event.preventDefaut();
+        event.preventDefault();
         var user={
             name:$("#name").val().trim(),
             photo:$("#pic").val().trim(),
             scores:[]
         }
         for(var i=1;i<=10;i++){
-            scores[i-1]=$("#q"+i.toString());
+            user.scores[i-1]=$("#q"+i.toString()).val();
+            user.scores[i-1]=parseInt(user.scores[i-1][0]);
         }
+        console.log(user);
         $.ajax("/api/friends",{
             type:"POST",
             data:user
         }).then(
             function(res){
                 console.log(res);
+                $("#modalName").text(res.name);
+                $("#modalPic").attr("src",res.photo);
+                $("#responseModal").modal();
             }
         )
     })
